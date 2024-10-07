@@ -141,13 +141,13 @@ do_action( 'tutor_dashboard/before/wrap' );
 						 */
 						if ( function_exists( 'tutor_pro' ) ) :
 							?>
-							<?php do_action( 'tutor_course_create_button' ); ?>
-							<?php else : ?>
+							<?php //do_action( 'tutor_course_create_button' ); // Edited by andriap@ugm.ac.id ?>
+						<?php else : ?>
 							<a href="<?php echo esc_url( admin_url( "post-new.php?post_type=$course_type" ) ); ?>" class="tutor-btn tutor-btn-outline-primary">
 								<i class="tutor-icon-plus-square tutor-my-n4 tutor-mr-8"></i>
 								<?php esc_html_e( 'Create a New Course', 'tutor' ); ?>
 							</a>
-					<?php endif; ?>
+						<?php endif; ?>
 						<?php
 					} elseif ( 'pending' == $instructor_status ) {
 						$on = get_user_meta( $user->ID, '_is_tutor_instructor', true );

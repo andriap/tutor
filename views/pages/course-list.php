@@ -16,30 +16,22 @@ use TUTOR\Input;
 
 $courses = \TUTOR\Tutor::instance()->course_list;
 
-/**
- * Short able params
- */
-$course_id     = Input::get( 'course-id', '' );
-$order_filter  = Input::get( 'order', 'DESC' );
-$date          = Input::get( 'date', '' );
+// Short able params
+$course_id = Input::get( 'course-id', '' );
+$order_filter = Input::get( 'order', 'DESC' );
+$date = Input::get( 'date', '' );
 $search_filter = Input::get( 'search', '' );
 $category_slug = Input::get( 'category', '' );
 
-/**
- * Determine active tab
- */
+// Determine active tab
 $active_tab = Input::get( 'data', 'all' );
 
-/**
- * Pagination data
- */
+// Pagination data
 $paged_filter = Input::get( 'paged', 1, Input::TYPE_INT );
-$limit        = tutor_utils()->get_option( 'pagination_per_page' );
-$offset       = ( $limit * $paged_filter ) - $limit;
+$limit = tutor_utils()->get_option( 'pagination_per_page' );
+$offset = ( $limit * $paged_filter ) - $limit;
 
-/**
- * Navbar data to make nav menu
- */
+// Navbar data to make nav menu
 $add_course_url = esc_url( admin_url( 'post-new.php?post_type=' . tutor()->course_post_type ) );
 $navbar_data    = array(
 	'page_title'   => $courses->page_title,
@@ -50,9 +42,7 @@ $navbar_data    = array(
 	'button_url'   => $add_course_url,
 );
 
-/**
- * Bulk action & filters
- */
+// Bulk action & filters
 $filters = array(
 	'bulk_action'     => $courses->bulk_action,
 	'bulk_actions'    => $courses->prepare_bulk_actions(),
@@ -74,19 +64,19 @@ $args = array(
 if ( 'all' === $active_tab || 'mine' === $active_tab ) {
 	$args['post_status'] = array( 'publish', 'pending', 'draft', 'private', 'future' );
 } else {
-	$status              = 'published' === $active_tab ? 'publish' : $active_tab;
+	$status = 'published' === $active_tab ? 'publish' : $active_tab;
 	$args['post_status'] = array( $status );
 }
 
 if ( 'mine' === $active_tab ) {
 	$args['author'] = get_current_user_id();
 }
-$date_filter = sanitize_text_field( tutor_utils()->array_get( 'date', $_GET, '' ) );
 
+// Add date query.
+$date_filter = sanitize_text_field( tutor_utils()->array_get( 'date', $_GET, '' ) );
 $year  = date( 'Y', strtotime( $date_filter ) );
 $month = date( 'm', strtotime( $date_filter ) );
 $day   = date( 'd', strtotime( $date_filter ) );
-// Add date query.
 if ( '' !== $date_filter ) {
 	$args['date_query'] = array(
 		array(
@@ -128,9 +118,9 @@ remove_filter( 'posts_search', '_tutor_search_by_title_only', 500 );
 $available_status = array(
 	'publish' => array( __( 'Publish', 'tutor' ), 'select-success' ),
 	'pending' => array( __( 'Pending', 'tutor' ), 'select-warning' ),
-	'trash'   => array( __( 'Trash', 'tutor' ), 'select-danger' ),
 	'draft'   => array( __( 'Draft', 'tutor' ), 'select-default' ),
-	'private' => array( __( 'Private', 'tutor' ), 'select-default' ),
+	'private' => array( __( 'Private', 'tutor' ), 'select-danger' ),
+	'trash'   => array( __( 'Trash', 'tutor' ), 'select-default' ),
 );
 
 if ( ! tutor_utils()->get_option( 'instructor_can_delete_course' ) && ! current_user_can( 'administrator' ) ) {
@@ -150,9 +140,7 @@ if ( 'trash' === $active_tab && current_user_can( 'administrator' ) ) {
 
 <div class="tutor-admin-wrap">
 	<?php
-		/**
-		 * Load Templates with data.
-		 */
+		// Load Templates with data.
 		$navbar_template  = tutor()->path . 'views/elements/navbar.php';
 		$filters_template = tutor()->path . 'views/elements/filters.php';
 		tutor_load_template_from_custom_path( $navbar_template, $navbar_data );
@@ -170,24 +158,24 @@ if ( 'trash' === $active_tab && current_user_can( 'administrator' ) ) {
 									<input type="checkbox" id="tutor-bulk-checkbox-all" class="tutor-form-check-input" />
 								</div>
 							</th>
-							<th class="tutor-table-rows-sorting" width="30%">
+							<th width="35%">
 								<?php esc_html_e( 'Title', 'tutor' ); ?>
-								<span class="a-to-z-sort-icon tutor-icon-ordering-a-z"></span>
 							</th>
-							<th width="13%">
-								<?php esc_html_e( 'Categories', 'tutor' ); ?>
-							</th>
-							<th width="13%">
+							<th width="15%">
 								<?php esc_html_e( 'Author', 'tutor' ); ?>
 							</th>
-							<th width="6%">
+							<th width="15%">
+								<?php esc_html_e( 'Categories', 'tutor' ); ?>
+							</th>
+							<th width="10%">
 								<?php esc_html_e( 'Price', 'tutor' ); ?>
 							</th>
-							<th class="tutor-table-rows-sorting" width="10%">
+							<th width="10%">
 								<?php esc_html_e( 'Date', 'tutor' ); ?>
-								<span class="a-to-z-sort-icon tutor-icon-ordering-a-z"></span>
 							</th>
-							<th></th>
+							<th>
+								<?php esc_html_e( 'Status', 'tutor' ); ?>
+							</th>
 						</tr>
 					</thead>
 
@@ -211,7 +199,7 @@ if ( 'trash' === $active_tab && current_user_can( 'administrator' ) ) {
 								 * Prevent re-query for same author details inside loop
 								 */
 								if ( ! isset( $authors[ $post->post_author ] ) ) {
-									$authors[ $post->post_author ] = tutils()->get_tutor_user( $post->post_author );
+									$authors[ $post->post_author ] = tutils()->get_tutor_user( $post->post_author );						
 								}
 
 								$author_details = $authors[ $post->post_author ];
@@ -272,19 +260,6 @@ if ( 'trash' === $active_tab && current_user_can( 'administrator' ) ) {
 									</td>
 
 									<td>
-										<span class="tutor-fw-normal tutor-fs-7">
-											<?php
-												$terms = wp_get_post_terms( $post->ID, 'course-category' );
-											if ( count( $terms ) ) {
-												echo esc_html( implode( ', ', array_column( $terms, 'name' ) ) . '&nbsp;' );
-											} else {
-												echo '...';
-											}
-											?>
-										</span>
-									</td>
-
-									<td>
 										<div class="tutor-d-flex tutor-align-center">
 											<?php
 											echo wp_kses(
@@ -301,16 +276,29 @@ if ( 'trash' === $active_tab && current_user_can( 'administrator' ) ) {
 									</td>
 
 									<td>
+										<span class="tutor-fw-normal tutor-fs-7">
+											<?php
+												$terms = wp_get_post_terms( $post->ID, 'course-category' );
+												if ( count( $terms ) ) {
+													echo esc_html( implode( ', ', array_column( $terms, 'name' ) ) . '&nbsp;' );
+												} else {
+													esc_html_e( 'n/a', 'tutor' );
+												}
+											?>
+										</span>
+									</td>
+
+									<td>
 										<div class="tutor-fs-7">
 											<?php
 												$price = tutor_utils()->get_course_price( $post->ID );
-											if ( null == $price ) {
-												esc_html_e( 'Free', 'tutor' );
-											} else {
-												echo $price; //phpcs:ignore
-											}
+												if ( null == $price ) {
+													esc_html_e( 'Free', 'tutor' );
+												} else {
+													echo $price; //phpcs:ignore
+												}
 												// Alert class for course status.
-												$status = ( 'publish' === $post->post_status ? 'select-success' : ( 'pending' === $post->post_status ? 'select-warning' : ( 'trash' === $post->post_status ? 'select-danger' : ( 'private' === $post->post_status ? 'select-default' : 'select-default' ) ) ) );
+												$status = ( 'publish' === $post->post_status ? 'select-success' : ( 'pending' === $post->post_status ? 'select-warning' : ( 'trash' === $post->post_status ? 'select-default' : ( 'private' === $post->post_status ? 'select-danger' : 'select-default' ) ) ) );
 											?>
 										</div>
 									</td>
@@ -348,14 +336,15 @@ if ( 'trash' === $active_tab && current_user_can( 'administrator' ) ) {
 												<i class="icon1 tutor-icon-eye-bold"></i>
 												<i class="icon2 tutor-icon-angle-down"></i>
 											</div>
-											<a class="tutor-btn tutor-btn-outline-primary tutor-btn-sm" href="<?php echo esc_url( get_permalink( $post->ID ) ); ?>" target="_blank">
-												<?php esc_html_e( 'View Course', 'tutor' ); ?>
-											</a>
 											<div class="tutor-dropdown-parent">
 												<button type="button" class="tutor-iconic-btn" action-tutor-dropdown="toggle">
 													<span class="tutor-icon-kebab-menu" area-hidden="true"></span>
 												</button>
 												<div id="table-dashboard-course-list-<?php echo esc_attr( $post->ID ); ?>" class="tutor-dropdown tutor-dropdown-dark tutor-text-left">
+													<a class="tutor-dropdown-item" href="<?php echo esc_url( get_permalink( $post->ID ) ); ?>" target="_blank">
+														<i class="tutor-icon-eye-line tutor-mr-8" area-hidden="true"></i>
+														<span><?php esc_html_e( 'View', 'tutor' ); ?></span>
+													</a>
 													<?php do_action( 'tutor_admin_befor_course_list_action', $post->ID ); ?>
 													<a class="tutor-dropdown-item" href="<?php echo esc_url( admin_url( 'post.php?post=' . $post->ID . '&action=edit' ) ); ?>">
 														<i class="tutor-icon-edit tutor-mr-8" area-hidden="true"></i>

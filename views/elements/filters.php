@@ -44,6 +44,7 @@ if ( isset( $data ) ) : ?>
 				$terms_arg  = array(
 					'taxonomy' => 'course-category',
 					'orderby'  => 'term_id',
+					'hide_empty' => false, // edited by @andriap
 					'order'    => 'DESC',
 				);
 				$categories = get_terms( $terms_arg );

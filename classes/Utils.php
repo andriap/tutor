@@ -3860,21 +3860,20 @@ class Utils {
 					tutor_job_title.meta_value AS tutor_profile_job_title,
 					tutor_bio.meta_value AS tutor_profile_bio,
 					tutor_photo.meta_value AS tutor_profile_photo
-			FROM	{$wpdb->users}
-					LEFT  JOIN {$wpdb->usermeta} tutor_job_title
-							ON ID = tutor_job_title.user_id
-						   AND tutor_job_title.meta_key = '_tutor_profile_job_title'
-					LEFT  JOIN {$wpdb->usermeta} tutor_bio
-							ON ID = tutor_bio.user_id
-						   AND tutor_bio.meta_key = '_tutor_profile_bio'
-					LEFT  JOIN {$wpdb->usermeta} tutor_photo
-							ON ID = tutor_photo.user_id
-						   AND tutor_photo.meta_key = '_tutor_profile_photo'
-			WHERE 	ID = %d
-			",
+			FROM {$wpdb->users}
+			LEFT JOIN {$wpdb->usermeta} tutor_job_title
+				ON ID = tutor_job_title.user_id
+				AND tutor_job_title.meta_key = '_tutor_profile_job_title'
+			LEFT JOIN {$wpdb->usermeta} tutor_bio
+				ON ID = tutor_bio.user_id
+				AND tutor_bio.meta_key = '_tutor_profile_bio'
+			LEFT JOIN {$wpdb->usermeta} tutor_photo
+				ON ID = tutor_photo.user_id
+				AND tutor_photo.meta_key = '_tutor_profile_photo'
+			WHERE ID = %d",
 				$user_id
 			)
-		);
+		); // edited by @andriap
 
 		TutorCache::set( $cache_key, $user );
 
@@ -8594,7 +8593,7 @@ class Utils {
 	public function tutor_empty_state( string $title = 'No data yet!' ) {
 		?>
 		<div class="tutor-empty-state td-empty-state tutor-p-32 tutor-text-center">
-			<img src="<?php echo esc_url( tutor()->url . 'assets/images/emptystate.svg' ); ?>" alt="<?php esc_attr_e( $title ); ?>" width="85%" />
+			<img src="<?php echo esc_url( tutor()->url . 'assets/images/emptystate.svg' ); ?>" alt="<?php esc_attr_e( $title ); ?>" />
 			<div class="tutor-fs-6 tutor-color-secondary tutor-text-center">
 				<?php echo esc_html( $title, 'tutor' ); ?>
 			</div>
@@ -9149,7 +9148,7 @@ class Utils {
 				'icon'  => 'tutor-icon-dashboard',
 			),
 			'my-profile'       => array(
-				'title' => __( 'My Profile', 'tutor' ),
+				'title' => __( 'Profile', 'tutor' ),
 				'icon'  => 'tutor-icon-user-bold',
 			),
 			'enrolled-courses' => array(
@@ -9165,7 +9164,7 @@ class Utils {
 				'icon'  => 'tutor-icon-star-bold',
 			),
 			'my-quiz-attempts' => array(
-				'title' => __( 'My Quiz Attempts', 'tutor' ),
+				'title' => __( 'Quiz Attempts', 'tutor' ),
 				'icon'  => 'tutor-icon-quiz-attempt',
 			),
 			'purchase_history' => array(
@@ -9651,11 +9650,11 @@ class Utils {
 		// Get course meta.
 		$results = $wpdb->get_results(
 			"SELECT DISTINCT course.ID AS course_id, 
-					content.ID AS content_id,
-					content.post_type AS content_type
+				content.ID AS content_id,
+				content.post_type AS content_type
 			FROM {$wpdb->posts} course
 				LEFT JOIN {$wpdb->posts} topic ON course.ID=topic.post_parent
-				INNER JOIN {$wpdb->posts} content ON topic.ID=content.post_parent
+				LEFT JOIN {$wpdb->posts} content ON topic.ID=content.post_parent
 				LEFT JOIN {$wpdb->posts} enrollment ON course.ID=enrollment.post_parent
 			WHERE topic.post_parent IN ($course_ids)"
 		);

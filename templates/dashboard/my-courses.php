@@ -46,6 +46,45 @@ if ( ! current_user_can( 'administrator' ) && ! tutor_utils()->get_option( 'inst
 }
 ?>
 
+<div class="tutor-card tutor-p-24">
+	<div class="tutor-row tutor-align-lg-center">
+		<div class="tutor-col-lg-auto tutor-mb-16 tutor-mb-lg-0">
+			<div class="tutor-round-box tutor-p-8">
+				<i class="tutor-icon-rocket tutor-fs-3" area-hidden="true"></i>
+			</div>
+		</div>
+
+		<div class="tutor-col tutor-mb-16 tutor-mb-lg-0">
+			<div class="tutor-fs-6 tutor-color-muted tutor-mb-4">
+				<?php esc_html_e( 'Create course', 'tutor' ); ?>
+			</div>
+			<div class="tutor-fs-5 tutor-color-black">
+				<?php esc_html_e( 'Create your awesome course', 'tutor' ); ?>
+			</div>
+		</div>
+
+		<div class="tutor-col-lg-auto">
+				<?php
+				/**
+				 * Render create course button based on free & pro
+				 *
+				 * @since v2.0.7
+				 */
+				if ( function_exists( 'tutor_pro' ) ) :
+				?>
+					<?php do_action( 'tutor_course_create_button' ); ?>
+					<?php else : ?>
+					<a href="<?php echo esc_url( admin_url( "post-new.php?post_type=$course_type" ) ); ?>" class="tutor-btn tutor-btn-outline-primary">
+						<i class="tutor-icon-plus-square tutor-my-n4 tutor-mr-8"></i>
+						<?php esc_html_e( 'Create a New Course', 'tutor' ); ?>
+					</a>
+				<?php 
+				endif; 
+				?>
+		</div>
+	</div>
+</div>
+
 <div class="tutor-dashboard-my-courses">
 	<div class="tutor-fs-5 tutor-fw-medium tutor-color-black tutor-mb-16">
 		<?php esc_html_e( 'My Courses', 'tutor' ); ?>
