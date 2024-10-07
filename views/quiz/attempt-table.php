@@ -24,7 +24,7 @@ if ( 'course-single-previous-attempts' == $context && is_array( $attempt_list ) 
 }
 ?>
 
-<?php if ( is_array( $attempt_list ) && count( $attempt_list ) ) : ?>
+
 	<div class="tutor-table-responsive tutor-my-24">
 		<table class="tutor-table tutor-table-quiz-attempts">
 			<thead>
@@ -46,12 +46,12 @@ if ( 'course-single-previous-attempts' == $context && is_array( $attempt_list ) 
 				</tr>
 			</thead>
 
-			<?php
-				$attempt_ids   = array_column( $attempt_list, 'attempt_id' );
-				$answers_array = \Tutor\Models\QuizModel::get_quiz_answers_by_attempt_id( $attempt_ids, true );
-			?>
-
 			<tbody>
+				<?php if ( is_array( $attempt_list ) && count( $attempt_list ) ) : ?>
+				<?php
+					$attempt_ids   = array_column( $attempt_list, 'attempt_id' );
+					$answers_array = \Tutor\Models\QuizModel::get_quiz_answers_by_attempt_id( $attempt_ids, true );
+				?>
 				<?php foreach ( $attempt_list as $attempt ) : ?>
 					<?php
 						$course_id         = is_object( $attempt ) && property_exists( $attempt, 'course_id' ) ? $attempt->course_id : 0;
@@ -192,12 +192,16 @@ if ( 'course-single-previous-attempts' == $context && is_array( $attempt_list ) 
 						<?php endforeach; ?>
 					</tr>
 				<?php endforeach; ?>
+				<?php else : ?>
+					<tr>
+						<td colspan="100%" class="column-empty-state">
+						<?php tutor_utils()->tutor_empty_state( tutor_utils()->not_found_text() ); ?>
+						</td>
+					</tr>
+				<?php endif; ?>
 			</tbody>
 		</table>
 	</div>
-<?php else : ?>
-	<?php tutor_utils()->tutor_empty_state( tutor_utils()->not_found_text() ); ?>
-<?php endif; ?>
 <?php
 // Load delete modal.
 tutor_load_template_from_custom_path(

@@ -15,7 +15,6 @@ $page_key      = 'qna-table';
 $table_columns = include __DIR__ . '/contexts.php';
 $view_as       = isset( $view_as ) ? $view_as : ( is_admin() ? 'instructor' : 'student' );
 ?>
-<?php if ( is_array( $qna_list ) && count( $qna_list ) ) : ?>
 	<div class="tutor-table-responsive">
 		<table data-qna_context="<?php echo esc_attr( $context ); ?>" class="frontend-dashboard-qna-table-<?php echo esc_attr( $view_as ); ?> tutor-table tutor-table-middle qna-list-table">
 			<thead>
@@ -29,6 +28,7 @@ $view_as       = isset( $view_as ) ? $view_as : ( is_admin() ? 'instructor' : 's
 			</thead>
 
 			<tbody>
+			<?php if ( is_array( $qna_list ) && count( $qna_list ) ) : ?>
 				<?php
 				$current_user_id = get_current_user_id();
 				foreach ( $qna_list as $qna ) :
@@ -189,6 +189,13 @@ $view_as       = isset( $view_as ) ? $view_as : ( is_admin() ? 'instructor' : 's
 						<?php endforeach; ?>
 					</tr>
 				<?php endforeach; ?>
+				<?php else : ?>
+					<tr>
+						<td colspan="100% class="column-empty-state">
+							<?php tutor_utils()->tutor_empty_state( tutor_utils()->not_found_text() ); ?>
+						</td>
+					</tr>
+				<?php endif; ?>
 			</tbody>
 		</table>
 
@@ -208,6 +215,3 @@ $view_as       = isset( $view_as ) ? $view_as : ( is_admin() ? 'instructor' : 's
 		<?php endif; ?>
 	</div>
 	<!-- end table responsive -->
-<?php else : ?>
-	<?php tutor_utils()->tutor_empty_state( tutor_utils()->not_found_text() ); ?>
-<?php endif; ?>

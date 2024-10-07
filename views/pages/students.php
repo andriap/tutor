@@ -70,7 +70,7 @@ $filters = array(
 	?>
 
 	<div class="tutor-admin-body">
-		<?php if ( is_array( $students_list ) && count( $students_list ) ) : ?>
+		
 			<div class="tutor-table-responsive tutor-mt-24">
 				<table class="tutor-table tutor-table-middle tutor-table-with-checkbox">
 					<thead>
@@ -101,6 +101,7 @@ $filters = array(
 					</thead>
 
 					<tbody>
+					<?php if ( is_array( $students_list ) && count( $students_list ) ) : ?>
 						<?php foreach ( $students_list as $list ) :
 							$reg_date = $list->user_registered;
 						?>
@@ -156,13 +157,16 @@ $filters = array(
 								</td>
 							</tr>
 						<?php endforeach; ?>
+						<?php else : ?>
+							<tr>
+								<td colspan="100%" class="column-empty-state">
+									<?php tutor_utils()->tutor_empty_state( tutor_utils()->not_found_text() ); ?>
+								</td>
+							</tr>
+						<?php endif; ?>
 					</tbody>
 				</table>
 			</div>
-		<?php else : ?>
-			<?php tutor_utils()->tutor_empty_state( tutor_utils()->not_found_text() ); ?>
-		<?php endif; ?>
-
 		<div class="tutor-admin-page-pagination-wrapper tutor-mt-32">
 			<?php
 				/**
